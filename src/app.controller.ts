@@ -42,6 +42,6 @@ export class AppController {
   @Post('categories')
   @UsePipes(ValidationPipe)
   create(@Body() createCategory: CreateCategoryDTO) {
-    this.clientAdminBackend.emit('create-category', createCategory); // emit return hotable observable
+    this.clientAdminBackend.emit('create-category', createCategory); // emit return an observable
   }
 }

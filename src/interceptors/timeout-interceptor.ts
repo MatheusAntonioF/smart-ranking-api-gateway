@@ -9,7 +9,7 @@ import { Observable, timeout } from 'rxjs';
 @Injectable()
 export class TimeoutInterceptor implements NestInterceptor {
   intercept(
-    context: ExecutionContext,
+    _: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     const TEN_SECONDS_IN_MILLISECONDS = 10000;

@@ -9,7 +9,7 @@ import { Observable, tap } from 'rxjs';
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(
-    context: ExecutionContext,
+    _: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     console.log('before...');
