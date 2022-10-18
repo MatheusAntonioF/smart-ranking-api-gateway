@@ -7,21 +7,15 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-
-/**
- * Client proxy turn the component to an event emitter
- * Send messages to the message broker
- */
 import {
   ClientProxy,
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { CreateCategoryDTO } from './dtos/create-category.dto';
+import { CreatePlayerDTO } from './dtos/create-player.dto';
 
-@Controller('api/v1/categories')
-export class AppController {
+@Controller('api/v1/players')
+export class PlayersController {
   private clientAdminBackend: ClientProxy;
 
   constructor() {
@@ -34,14 +28,14 @@ export class AppController {
     });
   }
 
-  @Get('')
-  index(@Query('category_id') category_id: string): Observable<any> {
-    return this.clientAdminBackend.send('get-categories', category_id || ''); // send return a code observable
+  @Get()
+  async index(@Query() player_id: string) {
+    return this.clientAdminBackend.send('get-players', player_id || ''); // send return a code observable
   }
 
-  @Post('')
+  @Post()
   @UsePipes(ValidationPipe)
-  create(@Body() createCategory: CreateCategoryDTO) {
-    this.clientAdminBackend.emit('create-category', createCategory); // emit return an observable
+  async create(@Body() createPlayer: CreatePlayerDTO) {
+    this.clientAdminBackend.emit('create-player', createPlayer); // emit return an observable
   }
 }
