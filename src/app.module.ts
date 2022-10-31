@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { PlayersModule } from './players/player.module';
 import { AwsModule } from './aws/aws.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AwsModule } from './aws/aws.module';
     }),
     PlayersModule,
     AwsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],
