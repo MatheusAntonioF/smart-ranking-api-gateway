@@ -2,8 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -12,13 +15,15 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AwsService } from 'src/aws/aws.service';
 import { CreatePlayerDTO } from './dtos/create-player.dto';
 
 @Controller('api/v1/players')
 export class PlayersController {
   private clientAdminBackend: ClientProxy;
 
-  constructor() {
+  constructor(private readonly awsService: AwsService) {
     this.clientAdminBackend = ClientProxyFactory.create({
       transport: Transport.RMQ, // param to specify the transporter to rabbit mq
       options: {
@@ -37,5 +42,25 @@ export class PlayersController {
   @UsePipes(ValidationPipe)
   async create(@Body() createPlayer: CreatePlayerDTO) {
     this.clientAdminBackend.emit('create-player', createPlayer); // emit return an observable
+  }
+
+  @Post('/:id/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') player_id: string,
+  ) {
+    const { url } = await this.awsService.uploadFile(file, player_id);
+
+    const updatePlayer = {
+      url_photo_player: url,
+    };
+
+    this.clientAdminBackend.emit('update-player', {
+      id: player_id,
+      updatePlayer,
+    });
+
+    return { url };
   }
 }
