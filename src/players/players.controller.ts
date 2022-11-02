@@ -6,6 +6,7 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -15,10 +16,11 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+
 import { AwsService } from 'src/aws/aws.service';
 import { CreatePlayerDTO } from './dtos/create-player.dto';
-
 @Controller('api/v1/players')
 export class PlayersController {
   private clientAdminBackend: ClientProxy;
@@ -36,6 +38,7 @@ export class PlayersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   async index(@Query() player_id: string) {
     return this.clientAdminBackend.send('get-players', player_id || ''); // send return a code observable
   }
