@@ -1,0 +1,10 @@
+# Document to specif params to cloud foundry
+---
+applications:
+  - name: api-gateway
+    path: dist
+    instances: 3
+    memory: 128MB
+    disk_quota: 1GB
+    command: node main
+    health-check-type: none
